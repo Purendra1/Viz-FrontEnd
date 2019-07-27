@@ -1,6 +1,6 @@
 # Viz FrontEnd
 Pre-requisites:
-Python (v3.6.x and above)
+Python (v3.6.x and above) and a web browser with JavaScript support
 
 To run the Front End you will require a server. Make one by navigating to:
     `./public_html`
