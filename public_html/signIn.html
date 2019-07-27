@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<meta charset="UTF-8">
 <!--
 To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
@@ -7,10 +8,39 @@ and open the template in the editor.
 
 <html>
     <head>
+        
         <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+        <script>
+            function f() {
+                var xhttp = new XMLHttpRequest();
+                /*xhttp.onreadystatechange = function() {
+                 if (this.readyState === 4 && this.status === 200) {
+                 alert("Logged In");
+                 }
+                 else alert("Login failed");
+                 };*/
+                xhttp.onload = function () {
+                    // Begin accessing JSON data here
+                    //var data = JSON.parse(this.response);
+
+                    if (xhttp.status >= 200 && xhttp.status < 400) {
+                        console.log(xhttp.responseText);
+                    } else {
+                        console.log('error');
+                    }
+                }
+
+                xhttp.open("GET", "http://localhost:8000/api/signIn/", true);
+                xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                xhttp.setRequestHeader('Access-Control-Allow-Origin', '*');
+                data = {"username":document.getElementById('username').value,"password":document.getElementById('password').value};
+                var x = xhttp.send(data);
+            }
+        </script>
+        
+        
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" 
               integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"/>
-        <link rel="stylesheet" type="text/css" href="{% static '/CSS/style.css' %}">
         <style type="text/css">
             .container {
                 position: relative;
@@ -40,6 +70,8 @@ and open the template in the editor.
             VIZ - your photo sharing companion
         </title>
     </head>
+    
+    
     <body>
         <br>
     <center>
@@ -48,9 +80,17 @@ and open the template in the editor.
     </center>
     <div class="container">
         <center>
+            <script src="./JS/TokenCheck.js"></script>
+            <form onsubmit="f()">
+                USERNAME: <input type="text" id="username" label="Username"/><br><br>
+                PASSWORD: <input type="password" id="password" label="Password"/><br><br>
+                <input type="submit" value="Login" id="Login"><br>
+            </form>
         </center>
     </div>
     <!--Hello
     <form action="/PHP/abc.php" method="POST"><button type="submit" name="submit" value="dasda" label="asdasdg" style="width: 100px; height: 30px;">yo</button></form>-->
-</body>
+    </body>
+    
+    
 </html>
