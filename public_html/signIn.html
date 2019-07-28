@@ -5,7 +5,7 @@ To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
-
+<script></script>
 <html>
     <head>
         
@@ -13,29 +13,34 @@ and open the template in the editor.
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script>
             function f() {
-                var xhttp = new XMLHttpRequest();
-                /*xhttp.onreadystatechange = function() {
-                 if (this.readyState === 4 && this.status === 200) {
-                 alert("Logged In");
-                 }
-                 else alert("Login failed");
-                 };*/
-                xhttp.onload = function () {
-                    // Begin accessing JSON data here
-                    //var data = JSON.parse(this.response);
+                /* global csrfToken */
+                /* global authToken*/
+                var authToken='';
+                var username = document.getElementById("username").value;
+                var password = document.getElementById("password").value;
+var data = {'csrfmiddlewaretoken':csrfToken,'username':username,'password':password};
+console.log(data);
+$.ajax({
+  url:"http://localhost:8000/api/getAuthToken/",
+  type:"POST",
+  data:data,
+  async: false,
+  dataType:"json",
+  success: function(response){
+      console.log(response);
+      authToken=response["token"];
+      document.cookie=authToken;
+      console.log(document.cookie);
+  },
+  complete: function(e,xhr,ss)
+  {
+	  if(e.status>=400){
+	  alert("INVALID CREDENTIALS");
+	  event.preventDefault();
 
-                    if (xhttp.status >= 200 && xhttp.status < 400) {
-                        console.log(xhttp.responseText);
-                    } else {
-                        console.log('error');
-                    }
-                }
-
-                xhttp.open("GET", "http://localhost:8000/api/signIn/", true);
-                xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                xhttp.setRequestHeader('Access-Control-Allow-Origin', '*');
-                data = {"username":document.getElementById('username').value,"password":document.getElementById('password').value};
-                var x = xhttp.send(data);
+	 }
+  }
+});
             }
         </script>
         
@@ -82,7 +87,7 @@ and open the template in the editor.
     <div class="container">
         <center>
             <script src="./JS/TokenCheck.js"></script>
-            <form onsubmit="f()">
+            <form id="loginForm" onsubmit="f()" action="profile.html">
                 USERNAME: <input type="text" id="username" label="Username"/><br><br>
                 PASSWORD: <input type="password" id="password" label="Password"/><br><br>
                 <input type="submit" value="Login" id="Login"><br>
