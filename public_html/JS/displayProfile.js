@@ -1,5 +1,5 @@
-    console.log(document.cookie);
-var authToken = decodeURIComponent(document.cookie).split(';')[1];
+
+var authToken = decodeURIComponent(document.cookie).split(';')[2];
 $.ajax({
 
   url:"http://localhost:8000/api/profile/",
@@ -15,9 +15,8 @@ $.ajax({
 	  }
 	  else{
       var imgsrc = "http://localhost:8000"+response["image"];
-      console.log(imgsrc);
       document.getElementById("demo").innerHTML =
-            "<img src="+imgsrc+" height='300' width='300' />\n\
+            "<img src="+imgsrc+" height='300' width='300' style='border-radius:50%;'/>\n\
             <br>USERNAME = " + response["username"]
             + "<br> NAME: "  + response["firstname"] +" "+ response["lastname"]
             + "<br> EMAIL: " + response["email"];

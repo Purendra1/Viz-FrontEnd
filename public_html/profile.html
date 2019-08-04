@@ -19,8 +19,74 @@ and open the template in the editor.
 <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script>
+  detail_url = [];
     function logout(){
         document.cookie='';
+    }
+    function a()
+    {
+      var authToken = decodeURIComponent(document.cookie).split(';')[2];
+      $.ajax({
+
+  url:"http://localhost:8000/api/albums/",
+  type:"GET",
+  headers: {
+        'Authorization': 'Token ' + authToken
+    },
+  success: function(response){
+    if(response.status>=400)
+    {
+      document.getElementById("demo").innerHTML = "An Error Occured";
+      //document.getElementById("logoutB").style.visibility = 'hidden';
+    }
+    else{
+      console.log(response);
+      var htm = '';
+        for(i=0;i<response.length;i++)
+        {
+          htm=htm+'<p><div class="container"style="float:left;">'
+          htm=htm+"<h3>"+response[i]["title"]+"</h3><br>";
+          var date = response[i]["date_posted"];
+          var day = date.split("T")[0];
+          var time = date.split("T")[1];
+          var time = time.split(".")[0];
+          var time = time.split("Z")[0];
+          htm=htm+"<button onclick='b("+i+")'>SHOW ALBUM</button>";
+          detail_url.push(response[i]["detail_url"]);
+          htm=htm+dateToString(day)+" - "+time+" UTC</p>";
+          htm=htm+"<img src="+response[i]["cover"]+" width='300' height='300'/><br><br></div>";
+        }
+        document.getElementById("myAlbums").innerHTML=htm;
+      }
+  },
+  complete: function(e, xhr, settings){if(e.status>=400)
+    {
+      document.getElementById("demo").innerHTML = "YOU ARE NOT LOGGED IN";
+      document.getElementById("logoutB").style.visibility = 'hidden';
+    }}
+});
+    }
+
+    monthD = {"01":"January","02":"February","03":"March","04":"April","05":"May","06":"June","07":"July","08":"August","09":"September","10":"October","11":"November","12":"December"}; 
+
+
+    function dateToString(day)
+    {
+        var year = day.split("-")[0];
+        var month = day.split("-")[1];
+        var dayN = day.split("-")[2];
+        var string = monthD[month]+" "+dayN+", "+year;
+        return string;
+    }
+
+
+    function b(i)
+    {
+      var ifrm = document.getElementById("ifr").style.display="block";
+      localStorage.setItem("detail_url",detail_url[i]);
+      console.log("EEEEEEEEEE"+i);
+      console.log(detail_url[i]);
+      document.getElementById('ifr').contentWindow.location.reload(true);
     }
 </script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" 
@@ -65,9 +131,17 @@ VIZ - your photo sharing companion
 <div class="container">
 <center>
     <script src="./JS/displayProfile.js"></script>
+    <h4 style="color: rgb(125,0,0);">PROFILE</h4>
     <div id='demo'></div>
+    <br>
+    <div><button style="float:left;" onclick="a()">MY ALBUMS</button></div>
 </center>
 </div>
+
+<iframe id="ifr" src="viewAlbum.html" style="display:none;" height="1000" width="1000"></iframe>
+<div id="myAlbums">
+</div>
+
 <!--Hello
 <form action="/PHP/abc.php" method="POST"><button type="submit" name="submit" value="dasda" label="asdasdg" style="width: 100px; height: 30px;">yo</button></form>-->
 </body>
